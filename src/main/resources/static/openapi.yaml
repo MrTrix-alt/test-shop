@@ -1,0 +1,213 @@
+openapi: 3.0.3
+
+info:
+  title: Test task
+  description: Test task
+  version: 0.0.1
+servers:
+  - url: 'http://localhost:8080'
+
+tags:
+  - name: "Отчет по покупкам"
+
+paths:
+  /shoppingreport/byLastWeek:
+    get:
+      summary:  Покупки за последнюю неделю
+      tags:
+        - "Shopping Report"
+      description: Поиск покупок за последнюю неделю
+      operationId: byLastWeek
+      responses:
+        '200':
+          description: Покупки найдены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShoppingReportResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ShoppingReportResponse'
+        '404':
+          description: Покупки за последнюю неделю не найдены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ReportErrorResponse'
+  /shoppingreport/mostBoughtItem:
+    get:
+      summary: Самый продаваемый товар
+      tags:
+        - "Shopping Report"
+      description: Самый продаваемый товар
+      operationId: mostBoughtItem
+      responses:
+        '200':
+          description: Товар найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ItemResponse'
+        '404':
+          description: Товар не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ReportErrorResponse'
+  /shoppingreport/customerWhoBoughtMostThanOther:
+    get:
+      summary: Поиск пользователя совершившего больше всего покупок за полгода
+      tags:
+        - "Shopping Report"
+      description:  Поиск пользователя совершившего больше всего покупок за полгода
+      operationId: customerWhoBoughtMostThanOther
+      responses:
+        '200':
+          description: Пользователь найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+        '404':
+          description: Товар не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ReportErrorResponse'
+  /shoppingreport/findMostBoughtItemByCustomerAge/{age}:
+    get:
+      summary: Поиск самого покумаемого товара среди людей определенного возраста
+      tags:
+        - "Shopping Report"
+      description: Поиск самого покумаемого товара среди людей определенного возраста
+      parameters:
+        - name: age
+          in: path
+          description: Возраст пользователя
+          required: true
+          schema:
+            type: integer
+            minimum: 16
+            maximum: 120
+      operationId: findMostBoughtItemByCustomerAge
+      responses:
+        '200':
+          description: Товар найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ItemResponse'
+        '400':
+          description: Некорректный параметр запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '404':
+          description: Товар не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportErrorResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ReportErrorResponse'
+
+
+components:
+  schemas:
+    ShoppingReportResponse:
+      description: Список покупок
+      type: object
+      properties:
+        customer:
+          $ref: '#/components/schemas/CustomerResponse'
+        items:
+          description: Список товаров
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemResponse'
+        boughtAt:
+          description: Дата совершения покупки
+          type: string
+          format: date
+          example: "2022-01-15"
+        count:
+          description: Количество купленных товаров
+          type: integer
+        amount:
+          description: Стоимость покупки
+          type: number
+    CustomerResponse:
+      description: Инфрормация о пользователе
+      type: object
+      properties:
+        name:
+          description: Имя пользователя
+          type: string
+        lastname:
+          description: Фамилия пользователя
+          type: string
+    ItemResponse:
+      description: Товар
+      type: object
+      properties:
+        name:
+          description: Название товара
+          type: string
+    ReportErrorResponse:
+      description: Ошибка при поиске отчета
+      type: object
+      properties:
+        code:
+          description: Статус ответа
+          type: integer
+        message:
+          description: Сообщение ответа
+          type: string
+    ValidationErrorResponse:
+      description: Проверка данных на корректность
+      type: object
+      properties:
+        code:
+          description: Статус ответа
+          type: integer
+        message:
+          description: Сообщение ответа
+          type: string
+        fieldError:
+          description: Список ошибок в запросе
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldError'
+    FieldError:
+      description: Описание ошибок в параметрах запроса
+      type: object
+      properties:
+        field:
+          description: Поле в запросе
+          type: string
+        message:
+          description: Описание ошибки в поле запроса
+          type: string

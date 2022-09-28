@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://postgresqldb:5432/dev-db
+    data: classpath:data.sql
+    continue-on-error: true
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+
+
+logging:
+  level:
+    org:
+      springframework:
+        data: debug
+      hibernate:
+        type:
+          descriptor:
+            sql: trace

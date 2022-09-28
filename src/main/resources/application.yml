@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    username: postgres
+    password:
+    driver-class-name: org.postgresql.Driver
+    initialization-mode: always
+    schema: classpath:schema.sql
+  jpa:
+    hibernate:
+      ddl-auto: none
+    generate-ddl: false
+#  'Method org.postgresql.jdbc.PgConnection.createClob() is not yet implemented'
+#   Не нашел как исправить
+#    properties:
+#      hibernate:
+#        jdbc:
+#          lob:
+#            non_contextual_creation: true
+springdoc:
+  swagger-ui:
+    url: /openapi.yaml

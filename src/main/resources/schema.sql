@@ -1,0 +1,43 @@
+CREATE SEQUENCE IF NOT EXISTS item_seq START WITH 1 INCREMENT BY 1;
+
+CREATE TABLE IF NOT EXISTS item
+(
+    id    BIGINT           NOT NULL,
+    name  VARCHAR(255),
+    price DOUBLE PRECISION NOT NULL,
+    CONSTRAINT pk_item PRIMARY KEY (id)
+);
+
+CREATE SEQUENCE IF NOT EXISTS customer_seq START WITH 1 INCREMENT BY 1;
+
+CREATE TABLE IF NOT EXISTS customer
+(
+    id        BIGINT  NOT NULL,
+    name      VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NULL,
+    age       INTEGER NOT NULL,
+    CONSTRAINT pk_customer PRIMARY KEY (id)
+);
+
+CREATE SEQUENCE IF NOT EXISTS purchase_seq START WITH 1 INCREMENT BY 1;
+
+CREATE TABLE IF NOT EXISTS purchase
+(
+    id          BIGINT NOT NULL,
+    bought_at   DATE NOT NULL,
+    customer_id BIGINT,
+    CONSTRAINT pk_purchase PRIMARY KEY (id),
+    CONSTRAINT FK_PURCHASE_ON_CUSTOMER FOREIGN KEY (customer_id) REFERENCES customer (id)
+);
+
+CREATE SEQUENCE IF NOT EXISTS purchaseitem_seq START WITH 1 INCREMENT BY 1;
+
+CREATE TABLE IF NOT EXISTS purchase_item
+(
+    id          BIGINT NOT NULL,
+    purchase_id BIGINT,
+    item_id     BIGINT,
+    CONSTRAINT pk_purchase_item PRIMARY KEY (id),
+    CONSTRAINT FK_PURCHASE_ITEM_ON_ITEM FOREIGN KEY (item_id) REFERENCES item (id),
+    CONSTRAINT FK_PURCHASE_ITEM_ON_PURCHASE FOREIGN KEY (purchase_id) REFERENCES purchase (id)
+);
